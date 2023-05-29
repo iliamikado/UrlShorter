@@ -18,17 +18,17 @@ func NewUrlsStorage() *UrlsStorage {
 	}
 }
 
-func (us *UrlsStorage) AddUrl(longUrl string) string {
-	shortUrl := "short" + strconv.Itoa(us.count)
+func (us *UrlsStorage) AddURL(longURL string) string {
+	shortURL := "/short" + strconv.Itoa(us.count)
 
-	us.shortToLong[shortUrl] = longUrl
-	us.longToShort[longUrl] = shortUrl
+	us.shortToLong[shortURL] = longURL
+	us.longToShort[longURL] = shortURL
 	us.count++;
-	return shortUrl
+	return shortURL
 }
 
 
-func (us *UrlsStorage) GetLongUrlByShort(shortUrl string) (string, bool) {
-	longUrl, ok := us.shortToLong[shortUrl]
-	return longUrl, ok
+func (us *UrlsStorage) GetLongURLByShort(shortURL string) (string, bool) {
+	longURL, ok := us.shortToLong[shortURL]
+	return longURL, ok
 }

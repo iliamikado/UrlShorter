@@ -10,40 +10,40 @@ import (
 func CheckRequest(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		GetUrlById(w, r)
+		GetURLById(w, r)
 	case http.MethodPost:
-		MakeShortUrl(w, r)
+		MakeShortURL(w, r)
 	default:
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "Wrong method")
 	}
 }
 
-func MakeShortUrl(w http.ResponseWriter, r *http.Request) {
+func MakeShortURL(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "Wrong body")
 		return
 	}
-	shortUrl := urlsStorage.AddUrl(string(body))
+	shortURL := urlsStorage.AddURL(string(body))
 	w.WriteHeader(201)
-	w.Write([]byte(shortUrl))
+	w.Write([]byte(shortURL))
 }
 
-func GetUrlById(w http.ResponseWriter, r *http.Request) {
-	shortUrl := strings.TrimPrefix(r.URL.Path, "/")
+func GetURLById(w http.ResponseWriter, r *http.Request) {
+	shortURL := strings.TrimPrefix(r.URL.Path, "/")
 
-	longUrl, ok := urlsStorage.GetLongUrlByShort(shortUrl)
+	longURL, ok := urlsStorage.GetLongURLByShort(shortURL)
 	if !ok {
 		w.WriteHeader(400)
-		fmt.Fprintln(w, "Wrong short url")
+		fmt.Fprintln(w, "Wrong short URL")
 		return
 	}
 
 	w.WriteHeader(307)
-	w.Header().Add("Location", longUrl)
-	w.Write([]byte(longUrl))
+	w.Header().Add("Location", longURL)
+	w.Write([]byte(longURL))
 }
 
 var urlsStorage *UrlsStorage;
