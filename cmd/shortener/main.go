@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -33,19 +32,14 @@ func MakeShortUrl(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUrlById(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/"))
-	if err != nil {
-		w.WriteHeader(400)
-		fmt.Fprintln(w, "Wrong id")
-		return
-	}
-	shortUrl, ok := urlsStorage.GetShortUrlById(id)
+	shortUrl := strings.TrimPrefix(r.URL.Path, "/")
+
+	longUrl, ok := urlsStorage.GetLongUrlByShort(shortUrl)
 	if !ok {
 		w.WriteHeader(400)
-		fmt.Fprintln(w, "No urls with this id")
+		fmt.Fprintln(w, "Wrong short url")
 		return
 	}
-	longUrl, _ := urlsStorage.GetLongUrlByShort(shortUrl)
 
 	w.WriteHeader(307)
 	w.Header().Add("Location", longUrl)
