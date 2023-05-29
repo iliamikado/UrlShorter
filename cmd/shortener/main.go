@@ -20,6 +20,7 @@ func CheckRequest(w http.ResponseWriter, r *http.Request) {
 
 func MakeShortURL(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
+	defer r.Body.Close()
 	if err != nil {
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "Wrong body")
