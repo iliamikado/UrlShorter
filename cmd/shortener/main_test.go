@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"io/ioutil"
+	"io"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -21,7 +21,7 @@ func TestMakeShortURL(t *testing.T) {
 
 	assert.Equal(t, result.StatusCode, 201)
 
-	shortURL, err := ioutil.ReadAll(result.Body)
+	shortURL, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
 	err = result.Body.Close()
 	require.NoError(t, err)
@@ -41,6 +41,8 @@ func TestGetLongURLByShort(t *testing.T) {
 	result := w.Result()
 
 	assert.Equal(t, result.StatusCode, 307)
+	err := result.Body.Close()
+	require.NoError(t, err)
 
 	longURL := result.Header.Get("Location")
 	assert.Equal(t, longURL, "http://google.com")
