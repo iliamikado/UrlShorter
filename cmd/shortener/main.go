@@ -40,8 +40,8 @@ func GetLongURLByShort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(307)
 	w.Header().Set("Location", longURL)
+	w.WriteHeader(307)
 	w.Write([]byte(longURL))
 }
 
