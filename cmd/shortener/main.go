@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
 func CheckRequest(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		GetURLById(w, r)
+		GetLongURLByShort(w, r)
 	case http.MethodPost:
 		MakeShortURL(w, r)
 	default:
@@ -26,13 +25,13 @@ func MakeShortURL(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Wrong body")
 		return
 	}
-	shortURL := urlsStorage.AddURL(string(body))
+	shortURL := host + urlsStorage.AddURL(string(body))
 	w.WriteHeader(201)
 	w.Write([]byte(shortURL))
 }
 
-func GetURLById(w http.ResponseWriter, r *http.Request) {
-	shortURL := strings.TrimPrefix(r.URL.Path, "/")
+func GetLongURLByShort(w http.ResponseWriter, r *http.Request) {
+	shortURL := r.URL.Path
 
 	longURL, ok := urlsStorage.GetLongURLByShort(shortURL)
 	if !ok {
@@ -46,7 +45,8 @@ func GetURLById(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(longURL))
 }
 
-var urlsStorage *UrlsStorage;
+var urlsStorage *UrlsStorage
+var host = "http://localhost:8080"
 
 func main() {
 	urlsStorage = NewUrlsStorage()
