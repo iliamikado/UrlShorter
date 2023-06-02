@@ -19,7 +19,7 @@ func NewUrlsStorage() *UrlsStorage {
 }
 
 func (us *UrlsStorage) AddURL(longURL string) string {
-	shortURL := "/short" + strconv.Itoa(us.count)
+	shortURL := "short" + strconv.Itoa(us.count)
 
 	us.shortToLong[shortURL] = longURL
 	us.longToShort[longURL] = shortURL
