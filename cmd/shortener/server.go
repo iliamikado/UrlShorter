@@ -10,11 +10,8 @@ import (
 var urlsStorage *UrlsStorage
 var host = "http://localhost:8080"
 
-func StartServer() {
-
-	urlsStorage = NewUrlsStorage()
-
-    r := chi.NewRouter()
+func NewRouter() chi.Router {
+	r := chi.NewRouter()
 
     r.Get("/{shortURL}", func(rw http.ResponseWriter, r *http.Request) {
         shortURL := chi.URLParam(r, "shortURL")
@@ -28,6 +25,7 @@ func StartServer() {
 	
 		rw.Header().Set("Location", longURL)
 		rw.WriteHeader(307)
+		rw.Write([]byte("Success request"))
     })
 
 	r.Post("/", func(rw http.ResponseWriter, r *http.Request) {
@@ -42,6 +40,12 @@ func StartServer() {
 		rw.WriteHeader(201)
 		rw.Write([]byte(shortURL))
 	})
+	return r
+}
 
+func StartServer() {
+
+	urlsStorage = NewUrlsStorage()
+	r := NewRouter()
     http.ListenAndServe(":8080", r)
 } 
