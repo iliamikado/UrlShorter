@@ -38,7 +38,7 @@ func StartServer() {
 			fmt.Fprintln(rw, "Wrong body")
 			return
 		}
-		shortURL := host + urlsStorage.AddURL(string(body))
+		shortURL := host + "/" + urlsStorage.AddURL(string(body))
 		rw.WriteHeader(201)
 		rw.Write([]byte(shortURL))
 	})
