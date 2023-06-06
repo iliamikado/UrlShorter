@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
     "net/http"
 	"fmt"
 	"io"
@@ -9,6 +10,15 @@ import (
 
 var urlsStorage *UrlsStorage
 var host = "http://localhost:8080"
+
+type PostShortenerRequest struct {
+	URL string `json:"url"`
+}
+
+type PostShortenerResponse struct {
+	Result string `json:"result"`
+}
+
 
 func NewRouter() chi.Router {
 	r := chi.NewRouter()
@@ -40,6 +50,29 @@ func NewRouter() chi.Router {
 		rw.WriteHeader(201)
 		rw.Write([]byte(shortURL))
 	})
+
+	r.Post("/api/shorten", func(rw http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		defer r.Body.Close()
+		if err != nil {
+			rw.WriteHeader(400)
+			fmt.Fprintln(rw, "Wrong body")
+			return
+		}
+		reqBody := PostShortenerRequest{}
+		err = json.Unmarshal(body, &reqBody)
+		if err != nil {
+			rw.WriteHeader(400)
+			fmt.Fprintln(rw, "Wrong body")
+			return
+		}
+		shortURL := host + "/" + urlsStorage.AddURL(reqBody.URL)
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(201)
+		resBody, _ := json.Marshal(PostShortenerResponse{shortURL})
+		rw.Write(resBody)
+	})
+
 	return r
 }
 

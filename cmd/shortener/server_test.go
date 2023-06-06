@@ -4,9 +4,8 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 	"strings"
-	"errors"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,12 +15,6 @@ func TestRouter(t *testing.T) {
 	urlsStorage = NewUrlsStorage()
     r := NewRouter()
     ts := httptest.NewServer(r)
-	ts.Client().CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		if len(via) >= 0 {
-			return errors.New("Остановлено после двух Redirect")
-		}
-		return nil
-	}
 
     defer ts.Close()
 	var (
@@ -63,4 +56,4 @@ func testRequest(t *testing.T, ts *httptest.Server, method, path string, body io
     defer resp.Body.Close()
 
     return resp.StatusCode, string(respBody), resp.Header
-} 
+}
